@@ -1,26 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import mercadopago from 'mercadopago';
-import { NextResponse } from 'next/server';
+import { NextApiRequest, NextApiResponse } from 'next';
+import mp from '../mercadoPago.config'; // Asegúrate de que la ruta sea correcta
 
-const mp = new mercadopago({
-  access_token: process.env.MERCADOPAGO_ACCESS_TOKEN,
-});
-
-export async function POST(request: Request) {
+export async function POST(request: NextApiRequest, response: NextApiResponse) {
   try {
-    const body = await request.json();
+    const body = await request.body; // Utiliza request.body en lugar de request.json()
     const { title, quantity, price } = body;
 
     if (!title || !quantity || !price) {
-      return NextResponse.json({ error: 'Faltan datos' }, { status: 400 });
+      return response.status(400).json({ error: 'Faltan datos' });
     }
 
     const preference = await mp.preferences.create({
       items: [
         {
           title,
-          unit_price: price,
-          quantity,
+          unit_price: parseFloat(price).toFixed(2),
+          quantity: parseInt(quantity),
         },
       ],
       back_urls: {
@@ -30,9 +26,9 @@ export async function POST(request: Request) {
       auto_return: 'approved',
     });
 
-    return NextResponse.json({ init_point: preference.body.init_point });
+    return response.json({ init_point: preference.body.init_point });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return response.status(500).json({ error: error.message });
   }
 }
