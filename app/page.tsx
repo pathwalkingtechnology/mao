@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Product } from './types';
-import { useCart } from '../context/CartContext';
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -39,21 +38,18 @@ export default function Home() {
             <p>{product.description}</p>
             <p>{product.price} ARS</p>
 
-            {/* Botón para añadir al carrito */}
-            <AddToCartButton product={product} />
+            {/* Espacio para el botón de MercadoPago */}
+            <div>
+              <p>Botón de MercadoPago aquí</p>
+            </div>
+
+            {/* Espacio para el carrito de compras */}
+            <div>
+              <p>Carrito de compras aquí</p>
+            </div>
           </div>
         ))}
       </div>
     </div>
-  );
-}
-
-function AddToCartButton({ product }: { product: Product }) {
-  const { addToCart } = useCart();
-
-  return (
-    <button onClick={() => addToCart(product)}>
-      Añadir al carrito
-    </button>
   );
 }

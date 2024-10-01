@@ -1,34 +1,46 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextApiRequest, NextApiResponse } from 'next';
-import mp from '../mercadoPago.config'; // Asegúrate de que la ruta sea correcta
+// Comentar la importación de MercadoPago para avanzar
+// import mercadopago from 'mercadopago';
 
 export async function POST(request: NextApiRequest, response: NextApiResponse) {
   try {
-    const body = await request.body; // Utiliza request.body en lugar de request.json()
-    const { title, quantity, price } = body;
+    // Código comentado para MercadoPago
+    /*
+    const { title, quantity, price } = request.body;
 
     if (!title || !quantity || !price) {
       return response.status(400).json({ error: 'Faltan datos' });
     }
 
-    const preference = await mp.preferences.create({
+    const preference = await mercadopago.preferences.create({
       items: [
         {
           title,
-          unit_price: parseFloat(price).toFixed(2),
+          unit_price: parseFloat(price),
           quantity: parseInt(quantity),
         },
       ],
       back_urls: {
-        success: '(link unavailable)',
-        failure: '(link unavailable)',
+        success: 'https://maografica.vercel.app/success',
+        failure: 'https://maografica.vercel.app/failure',
       },
       auto_return: 'approved',
     });
 
     return response.json({ init_point: preference.body.init_point });
+    */
+
+    return response.json({ message: 'Integración de MercadoPago comentada.' });
   } catch (error) {
     console.error(error);
-    return response.status(500).json({ error: error.message });
+
+    // Verificar si el error es una instancia de Error y tiene un mensaje
+    if (error instanceof Error) {
+      return response.status(500).json({ error: error.message });
+    }
+
+    // Si no es un Error, devolver un mensaje genérico
+    return response.status(500).json({ error: 'Ha ocurrido un error desconocido.' });
   }
 }
